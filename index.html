@@ -368,6 +368,10 @@
   }
   /* ============ LIGHTBOX ============ */
   #project-body img{cursor:zoom-in}
+  html{overflow-x:clip}
+  .embed-wrap{position:relative;width:100vw;margin-left:calc(50% - 50vw);margin-block:clamp(2rem,5vw,3.5rem);background:#0f0f2e;line-height:0}
+  .embed-frame{display:block;width:100%;height:100vh;height:100svh;border:0;background:#0f0f2e}
+  @media (max-width:768px){ .embed-frame{height:88vh;height:88svh} }
   .lb{position:fixed;inset:0;z-index:200;background:#141412;display:none;align-items:center;justify-content:center;overflow:hidden;touch-action:none}
   .lb.open{display:flex;animation:lbIn .22s ease both}
   @keyframes lbIn{from{opacity:0}to{opacity:1}}
@@ -634,6 +638,9 @@ const IMG_SUB_COVER = "assets/sub-cover.jpg";
     const IMG_FBOC_1 = "assets/fboc-1.jpg";
     const IMG_FBOC_2 = "assets/fboc-2.jpg";
     const projects = [
+    { slug:'ai-manifesto', title:'AI Manifesto and roadmap', client:'Delivery Hero', context:'Pandora · foodpanda, foodora, Yemeksepeti', themes:['Forward thinking','Org influence','AI'], domains:['Design systems'],
+      embed:'assets/ux-ai.html', cover:'assets/ai-manifesto-cover.jpg',
+      summary:"With the wider org still deciding how and why AI should reshape the way we work, I didn't want my team waiting on an answer. Alongside a small group of design leads, I pulled together a team manifesto and a roadmap of the workflow improvements we're prioritising, so we could start shaping our own AI direction rather than react to one handed down later." },
     { slug:'price-clarity', title:'Price communication system', client:'Delivery Hero', context:'Pandora · foodpanda, foodora, Yemeksepeti', tags:['Shipped'], themes:['Preemptive','Systemic'], domains:['Commerce'],
       hero:IMG_PC_1, media:IMG_PC_2, cover:IMG_PC_COVER,
       summary:'Untangling how prices, fees, and deals are communicated across the ordering journey. Rarely the flashiest design work, but often the most important: it sits at the foundation of the experience and quietly draws the line between a business that shrinks and one that grows.',
@@ -690,7 +697,7 @@ const IMG_SUB_COVER = "assets/sub-cover.jpg";
       situation:'A design system (Bento) that was solid but dated and stagnant; a design team, backed by anecdotal user feedback, convinced our UIs were unappealing and overdue for a refresh; a leadership team with little appetite to prioritise work like this without a clear GMV case; and design-system component adoption sitting at around 70%.',
       did:'<ul><li>What began as a side passion project for two designers and me, I chose to invest in hands-on, believing craft and quality were worth betting on.</li><li>Rallied the entire organisation behind the change, from all-hands presentations to sessions with market GMs, building the case and the momentum to make it happen.</li><li>Worked alongside the team through Spark’s evolution in Figma and critique, and defined the design principles that sit foundationally beneath the work.</li><li>Championed it with leadership and earned it the number one spot on product and tech’s 2026 roadmap.</li></ul>' },
 
-    { slug:'smart-search', title:'Smart search', client:'Delivery Hero', context:'Pandora · foodpanda, foodora, Yemeksepeti', tags:['In development'], themes:['Forward thinking','Hands-on'], domains:['Commerce'],
+    { slug:'smart-search', title:'Smart search', client:'Delivery Hero', context:'Pandora · foodpanda, foodora, Yemeksepeti', tags:['In development'], themes:['Forward thinking','Hands-on','AI'], domains:['Commerce'],
       hero:IMG_DHSS_1, media:IMG_DHSS_2, cover:IMG_DHSS_COVER,
       summary:'A conversational, chat-based way to discover food and more, where people can say what they are actually in the mood for and be guided to it. An active bet on how discovery should feel, not a tweak to search.',
       problem:'Our search was inefficient. It was built around finding vendors, so a customer craving a specific dish, or hunting for a particular item, got pushed through a roundabout, vendor-first path to reach it. Natural intent went unmet, results came back too broad to refine, and it was hard to tell which options were actually the best value.',
@@ -831,7 +838,7 @@ const IMG_SUB_COVER = "assets/sub-cover.jpg";
     return themes ? `<div class="tags">${themes}</div>` : '';
   }
 
-  const homeOrder = ['smart-search','spark','careem-pay','super-app-redesign','olx-rebrand','super-wallet','subscription-revamp','order-tracking','price-clarity','aurora','olx-design-system','olx-live','see-translation','oculus-voice'];
+  const homeOrder = ['smart-search','ai-manifesto','spark','careem-pay','super-app-redesign','olx-rebrand','super-wallet','subscription-revamp','order-tracking','price-clarity','aurora','olx-design-system','olx-live','see-translation','oculus-voice'];
   const bySlug = Object.fromEntries(projects.map(p=>[p.slug,p]));
   const homeTrack = document.getElementById('home-track');
   homeOrder.map(s=>bySlug[s]).filter(p=>p && !p.hidden).forEach(p => homeTrack.appendChild(el(
@@ -943,6 +950,25 @@ const IMG_SUB_COVER = "assets/sub-cover.jpg";
     const p = projects[i] || projects[0];
     const oi = homeOrder.indexOf(slug);
     const next = bySlug[homeOrder[(oi+1) % homeOrder.length]] || bySlug[homeOrder[0]];
+    if(p.embed){
+      document.getElementById('project-body').innerHTML = `
+      <a class="back" href="#/work">← All work</a>
+      <div class="detail-head">
+        <span class="eyebrow">${p.client} · ${p.context}</span>
+        <h1>${p.title}</h1>
+        <p>${p.summary}</p>
+        ${tagPills(p)}
+      </div>
+      <div class="embed-wrap">
+        <iframe class="embed-frame" src="${p.embed}" title="${p.title}" loading="lazy"></iframe>
+      </div>
+      <div class="next-proj" data-slug="${next.slug}" tabindex="0" role="link" aria-label="Next project: ${next.title}">
+        <div><span class="eyebrow">Next project</span><h3>${next.title}</h3></div>
+        <div class="go" style="font-family:var(--mono)">→</div>
+      </div>`;
+      window.scrollTo({top:0,behavior:'auto'});
+      return;
+    }
     document.getElementById('project-body').innerHTML = `
       <a class="back" href="#/work">← All work</a>
       <div class="detail-head">
