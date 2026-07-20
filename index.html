@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>tiago's portfolio</title>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SS4GG0DNJ7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SS4GG0DNJ7');
+</script>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20rx%3D%2224%22%20fill%3D%22%231B1B19%22%2F%3E%3Cpath%20d%3D%22M284%200Q204%200%20166.5%2036.5Q129%2073%20129%20153V435H45V534H129V659H257V534H398V435H257V165Q257%20127%20273.5%20113.0Q290%2099%20323%2099H398V0Z%22%20fill%3D%22%23F5F4F1%22%20transform%3D%22translate%2830.36%2083.00%29%20scale%280.09408%20-0.09408%29%22%2F%3E%3C%2Fsvg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -308,6 +316,10 @@
   .cta-label{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-right:.2rem}
   .cta-btn{font-family:var(--mono);font-size:.8rem;letter-spacing:.03em;color:#fff;background:transparent;border:1px solid rgba(255,255,255,.28);border-radius:100px;padding:.55rem 1.15rem;cursor:pointer;transition:border-color .2s,background .2s;display:inline-block}
   .cta-btn:hover{border-color:#fff;background:rgba(255,255,255,.08)}
+  .about-contact{margin-top:2.8rem}
+  .about-mail{display:inline-block;font-family:var(--display);font-weight:600;font-size:clamp(1.4rem,4vw,2.2rem);letter-spacing:-.02em;color:#fff;margin:.3rem 0 0;border-bottom:1px solid rgba(255,255,255,.32);transition:border-color .2s;word-break:break-word}
+  .about-mail:hover{border-color:#fff}
+  .about-contact .cta-more{margin-top:1.6rem}
   .future-section + .future-section{border-top:1px solid rgba(255,255,255,.12)}
   .evo{margin:var(--section-y) 0}
   .evo-head{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:1.2rem}
@@ -375,7 +387,6 @@
       <a href="#/work" data-nav="work">Work</a>
       <a href="#/playground" data-nav="playground">Playground <span class="soon-nav">soon</span></a>
       <a href="#/about" data-nav="about">About</a>
-      <a href="#/contact" data-nav="contact">Contact</a>
       <button type="button" class="nav-resume" data-resume>Résumé</button>
     </nav>
   </div>
@@ -531,34 +542,25 @@
       <div class="future-inner">
         <span class="future-eyebrow">Recent roles</span>
         <div class="gigs" id="about-gigs"></div>
-        <div class="cta-more">
-          <span class="cta-label">View more on:</span>
-          <a class="cta-btn" href="https://www.linkedin.com/in/tiagocabaco" target="_blank" rel="noopener">LinkedIn ↗</a>
-          <button class="cta-btn" type="button" data-resume-dl>Résumé ↓</button>
+        <div class="about-contact">
+          <span class="future-eyebrow" style="display:block;margin-bottom:.5rem">Get in touch</span>
+          <a class="about-mail" href="mailto:tiago.cabaco@gmail.com">tiago.cabaco@gmail.com</a>
+          <div class="cta-more">
+            <a class="cta-btn" href="https://www.linkedin.com/in/tiagocabaco" target="_blank" rel="noopener">LinkedIn ↗</a>
+            <button class="cta-btn" type="button" data-resume-dl>Résumé ↓</button>
+          </div>
         </div>
       </div>
     </section>
   </section>
-
-  <!-- ============ CONTACT ============ -->
-  <section class="route" data-route="contact">
-    <div class="wrap" style="padding-block:clamp(4rem,10vw,8rem) var(--section-y)">
-      <span class="eyebrow" style="display:block;margin-bottom:1.6rem">Contact</span>
-      <p class="contact-lead">Want to talk? Reach out:</p>
-      <a class="big-mail" href="mailto:tiago.cabaco@gmail.com">tiago.cabaco@gmail.com</a>
-      <div class="socials">
-        <a href="https://www.linkedin.com/in/tiagocabaco" target="_blank" rel="noopener">LinkedIn ↗</a>
-        <a href="#" data-resume>Résumé ↗</a>
-      </div>
-    </div>
-  </section>
+  
 
 </main>
 
 <footer>
   <div class="foot-inner">
     <span>© <span id="year"></span> Tiago</span>
-    <span><a href="#/work">Work</a> &nbsp;·&nbsp; <a href="#/about">About</a> &nbsp;·&nbsp; <a href="#/contact">Contact</a></span>
+    <span><a href="#/work">Work</a> &nbsp;·&nbsp; <a href="#/about">About</a></span>
   </div>
 </footer>
 
@@ -976,6 +978,7 @@ const IMG_SUB_COVER = "assets/sub-cover.jpg";
         <div><span class="eyebrow">Next project</span><h3>${next.title}</h3></div>
         <div class="go" style="font-family:var(--mono)">→</div>
       </div>`;
+    try{ const imgs=[...document.querySelectorAll('#project-body img')]; imgs.forEach((im,idx)=>{ im.style.cursor='zoom-in'; im.onclick=function(){ lbOpen(imgs.map(x=>x.getAttribute('src')), idx); }; }); }catch(_e){}
   }
 
   /* ============ ROUTING (hash-independent, works in sandboxed previews) ============ */
@@ -1079,6 +1082,7 @@ const IMG_SUB_COVER = "assets/sub-cover.jpg";
   }
   function closeResume(){ resumeModal.hidden = true; document.body.style.overflow = ''; if(lastFocused) lastFocused.focus(); }
   function downloadResume(){
+    try{ if(window.gtag) gtag('event','resume_download'); }catch(_e){}
     try{
       const url = URL.createObjectURL(new Blob([b64ToUint8(RESUME_PDF)], {type:'application/pdf'}));
       const a = document.createElement('a'); a.href = url; a.download = 'Tiago-Cabaco-Resume.pdf';
@@ -1154,7 +1158,7 @@ const IMG_SUB_COVER = "assets/sub-cover.jpg";
     const leg = dist.map(d=>`<span class="fd-item"><i style="background:${FD_COLORS[d[0]]||'#9a978f'}"></i>${d[0]} <b>${d[1]}%</b></span>`).join('');
     return `<div class="fd"><div class="fd-top"><span class="fd-label">Feedback synthesis</span><span class="fd-note">estimated source mix</span></div><div class="fd-bar">${bar}</div><div class="fd-legend">${leg}</div></div>`;
   }
-  const FALLBACK = `<p class="a-tldr">That’s a little outside what this can speak to.</p><p>This answers from a synthesis of feedback about how Tiago leads and what he’s like to work with — his style, standards, decisions, hiring, how he handles change, AI, and where he has room to grow. Try one of those, or <a href="#/contact">reach out</a> and Tiago can answer himself.</p>`;
+  const FALLBACK = `<p class="a-tldr">That’s a little outside what this can speak to.</p><p>This answers from a synthesis of feedback about how Tiago leads and what he’s like to work with — his style, standards, decisions, hiring, how he handles change, AI, and where he has room to grow. Try one of those, or <a href="mailto:tiago.cabaco@gmail.com">reach out</a> and Tiago can answer himself.</p>`;
   function entryHTML(e){ return `<p class="a-tldr">${e.tldr}</p>${e.answer}${fdHTML(e.dist)}`; }
   function think(q){
     agentInput.value=q; agentAnswer.classList.add('show'); agentQ.textContent=q;
@@ -1173,7 +1177,9 @@ const IMG_SUB_COVER = "assets/sub-cover.jpg";
   let askToken=0;
   function respond(q, e){
     q=(typeof q==='string'?q:'').trim();
-    const html = e ? entryHTML(e) : (matchKB(q) ? entryHTML(matchKB(q)) : FALLBACK);
+    const entry = e || (q ? matchKB(q) : null);
+    const html = entry ? entryHTML(entry) : FALLBACK;
+    try{ if(window.gtag && q) gtag('event','reference_question',{ question: q.slice(0,120), answered: !!entry, topic: entry ? String(entry.n) : 'none' }); }catch(_e){}
     const my=++askToken;
     think(q);
     const wait = 430 + Math.floor(Math.random()*300);
@@ -1198,8 +1204,7 @@ const IMG_SUB_COVER = "assets/sub-cover.jpg";
   let lbSx=0,lbSy=0;
   lb.addEventListener('touchstart', e=>{ lbSx=e.touches[0].clientX; lbSy=e.touches[0].clientY; }, {passive:true});
   lb.addEventListener('touchend', e=>{ const dx=e.changedTouches[0].clientX-lbSx, dy=e.changedTouches[0].clientY-lbSy; if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)) lbShow(lbIdx+(dx<0?1:-1)); else if(dy>80 && Math.abs(dy)>Math.abs(dx)) lbClose(); }, {passive:true});
-  const _pbody = document.getElementById('project-body');
-  if(_pbody) _pbody.addEventListener('click', e=>{ const im=e.target.closest('img'); if(!im) return; const imgs=[..._pbody.querySelectorAll('img')]; const idx=imgs.indexOf(im); if(idx<0) return; lbOpen(imgs.map(x=>x.getAttribute('src')), idx); });
+  document.addEventListener('click', e=>{ const a=e.target.closest('a[href^="mailto:"]'); if(a){ try{ if(window.gtag) gtag('event','contact_email'); }catch(_e){} } }, true);
   (function initRoute(){ const [n,p]=parseHash(); navigate(n,p); })();
   requestAnimationFrame(()=>{ const b=document.getElementById('boot'); if(b){ b.classList.add('done'); setTimeout(()=>b.remove(),550); } });
 </script>
