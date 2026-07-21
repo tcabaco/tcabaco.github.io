@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How I work — tiago</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20rx%3D%2224%22%20fill%3D%22%23F5F4F1%22%2F%3E%3Cpath%20d%3D%22M284%200Q204%200%20166.5%2036.5Q129%2073%20129%20153V435H45V534H129V659H257V534H398V435H257V165Q257%20127%20273.5%20113.0Q290%2099%20323%2099H398V0Z%22%20fill%3D%22%231B1B19%22%20transform%3D%22translate%2830.36%2083.00%29%20scale%280.09408%20-0.09408%29%22%2F%3E%3C%2Fsvg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@1,6..72,200;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+  /* ═══════ NIGHT TOKENS ═══════ */
+  :root{
+    --bg:#0D0C0B; --ink:#F2F0EA; --muted:rgba(242,240,234,.5); --dim:rgba(242,240,234,.3);
+    --line:rgba(242,240,234,.09); --bone:#B7B4AA; --parch:#DDD3BC; --ember:#C89055;
+    --sans:'Geist',"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --serif:'Newsreader',Georgia,serif;
+    --wrap:1240px; --gutter:clamp(1.25rem,4vw,4rem);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  html.rm{scroll-behavior:auto}
+  body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:rgba(200,144,85,.3)}
+  :focus-visible{outline:1px solid var(--bone);outline-offset:4px}
+
+  /* ═══════ FIXED LAYERS ═══════ */
+  #bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+  .tintl{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity 1.6s ease}
+  .tintl.on{opacity:1}
+  #tint-bone{background:radial-gradient(ellipse 95% 75% at 50% 36%,rgba(186,178,158,.10),transparent 70%),
+    radial-gradient(ellipse 70% 55% at 82% 100%,rgba(120,105,80,.09),transparent 70%)}
+  #tint-ice{background:radial-gradient(ellipse 95% 75% at 50% 36%,rgba(122,158,205,.14),transparent 70%),
+    radial-gradient(ellipse 70% 55% at 15% 100%,rgba(70,110,165,.11),transparent 70%)}
+  #tint-parch{background:radial-gradient(ellipse 95% 75% at 50% 36%,rgba(222,196,140,.12),transparent 70%),
+    radial-gradient(ellipse 70% 55% at 85% 100%,rgba(170,130,70,.10),transparent 70%)}
+  #tint-ember{background:radial-gradient(ellipse 95% 75% at 50% 36%,rgba(214,138,66,.13),transparent 70%),
+    radial-gradient(ellipse 70% 55% at 20% 100%,rgba(160,70,40,.11),transparent 70%)}
+  #dustc{position:fixed;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+  #vig{position:fixed;inset:0;z-index:3;pointer-events:none;
+    background:radial-gradient(ellipse 120% 100% at 50% 42%,transparent 55%,rgba(8,7,6,.5) 100%)}
+  #grain{position:fixed;inset:0;z-index:4;pointer-events:none;opacity:.42;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E")}
+  #progress{position:fixed;top:0;left:0;height:1px;width:0%;z-index:70;background:var(--bone);opacity:.85}
+
+  /* ═══════ SITE CHROME, NIGHT ═══════ */
+  .hdr{position:fixed;top:0;left:0;right:0;z-index:60;
+    background:linear-gradient(180deg,rgba(13,12,11,.82),rgba(13,12,11,0));
+    -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+  .hdr-in{max-width:var(--wrap);margin:0 auto;padding:1.05rem var(--gutter);
+    display:flex;align-items:center;justify-content:space-between}
+  .wordmark{font-weight:600;font-size:1.12rem;letter-spacing:-.01em}
+  .hdr nav{display:flex;gap:1.7rem}
+  .hdr nav a{font-size:.84rem;color:var(--muted);transition:color .3s}
+  .hdr nav a:hover{color:var(--ink)}
+  .back{position:fixed;left:var(--gutter);bottom:2rem;z-index:60;font-size:.78rem;color:var(--dim);
+    letter-spacing:.04em;transition:color .3s;mix-blend-mode:screen}
+  .back:hover{color:var(--ink)}
+
+  /* ═══════ CHAPTER RAIL ═══════ */
+  #rail{position:fixed;right:1.7rem;top:50%;transform:translateY(-50%);z-index:55;
+    display:flex;flex-direction:column;gap:.15rem}
+  .rl{display:flex;align-items:center;justify-content:flex-end;gap:.65rem;padding:.3rem 0;cursor:pointer}
+  .rl .nm{font-size:.58rem;letter-spacing:.26em;text-transform:uppercase;color:var(--muted);
+    opacity:0;transform:translateX(8px);transition:opacity .35s,transform .35s;white-space:nowrap}
+  .rl .ln{width:14px;height:1px;background:rgba(242,240,234,.22);transition:width .35s,background .35s}
+  .rl:hover .nm{opacity:1;transform:none}
+  .rl.on .nm{opacity:.9;transform:none;color:var(--bone)}
+  .rl.on .ln{width:30px;background:var(--bone)}
+  @media(max-width:1100px){#rail{display:none}}
+
+  /* ═══════ LAYOUT ═══════ */
+  main{position:relative;z-index:10}
+  .flow{max-width:var(--wrap);margin:0 auto;padding:clamp(6rem,16vh,10rem) var(--gutter)}
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);row-gap:2.6rem;column-gap:1.4rem}
+  .c-full{grid-column:1/-1}
+  .c-head{grid-column:1/11}
+  .c-sub{grid-column:6/13;border-left:1px solid var(--line);padding-left:clamp(1.4rem,3vw,2.6rem)}
+  .flip .c-head{grid-column:2/13}
+  .flip .c-sub{grid-column:1/8}
+  @media(max-width:820px){.c-head,.c-sub,.flip .c-head,.flip .c-sub{grid-column:1/-1}}
+
+  /* chapter marker row */
+  .mark{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;gap:1rem;
+    border-top:1px solid var(--line);padding-top:1rem;margin-bottom:clamp(2rem,6vh,4rem)}
+  .mark .ch{font-size:.62rem;letter-spacing:.4em;text-transform:uppercase;color:var(--bone)}
+  .mark .pr{font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ember);text-align:right}
+  @media(max-width:600px){.mark{flex-direction:column;gap:.45rem}.mark .pr{text-align:left}}
+
+  /* ═══════ TYPE ═══════ */
+  .disp{font-weight:500;letter-spacing:-.042em;line-height:1;font-size:clamp(2.1rem,5.6vw,4.9rem);text-wrap:balance}
+  .disp.g{font-size:clamp(2.7rem,8vw,7.6rem);line-height:.97}
+  .srf{font-family:var(--serif);font-style:italic;font-weight:300;letter-spacing:-.012em;
+    font-size:1.045em;color:var(--parch)}
+  .fh{font-weight:500;letter-spacing:-.034em;line-height:1.06;font-size:clamp(1.9rem,4.4vw,3.9rem);text-wrap:balance}
+  .sub{color:var(--muted);font-weight:300;font-size:clamp(.96rem,1.3vw,1.1rem);line-height:1.85;max-width:52ch}
+  .sub strong{color:var(--ink);font-weight:500}
+  .rooms{margin-top:2.2rem;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--dim);line-height:2.4;max-width:640px}
+  .rooms b{color:var(--muted);font-weight:400}
+
+  /* figures */
+  .figure{display:flex;align-items:baseline;gap:1.6rem;flex-wrap:wrap;margin-top:3rem}
+  .figure .num{font-weight:600;letter-spacing:-.045em;line-height:1;font-size:clamp(3.2rem,7.5vw,6.4rem)}
+  .figure .cap{font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);
+    max-width:24ch;line-height:1.9}
+
+  /* index rows */
+  .rows{margin-top:2.8rem;border-top:1px solid var(--line)}
+  .row{display:grid;grid-template-columns:3.4rem 1fr;gap:1rem 2rem;align-items:baseline;
+    padding:1.55rem 0;border-bottom:1px solid var(--line);transition:padding-left .45s cubic-bezier(.22,1,.36,1)}
+  .row .no{font-size:.64rem;letter-spacing:.24em;color:var(--bone)}
+  .row h4{font-weight:500;font-size:clamp(1.05rem,1.8vw,1.4rem);letter-spacing:-.015em;
+    display:flex;align-items:baseline;gap:.7rem}
+  .row h4 .arw{font-size:.8em;color:var(--ember);opacity:0;transform:translate(-4px,2px);transition:opacity .35s,transform .35s}
+  .row p{grid-column:2;color:var(--muted);font-weight:300;font-size:.9rem;line-height:1.75;max-width:56ch}
+  a.row:hover,.row:hover{padding-left:.8rem}
+  a.row:hover h4 .arw{opacity:1;transform:none}
+  a.row h4{color:var(--ink);transition:color .35s}
+  a.row:hover h4{color:var(--parch)}
+  .rows-note{margin-top:.9rem;font-size:.62rem;letter-spacing:.26em;text-transform:uppercase;color:var(--dim)}
+
+  /* ═══════ PINNED STORY SEQUENCES ═══════ */
+  .pin-wrap{position:relative}
+  .pin{position:sticky;top:0;height:100vh;display:grid;place-items:center;overflow:hidden;
+    padding:0 var(--gutter)}
+  .beat{grid-area:1/1;max-width:30ch;text-align:center;opacity:0;will-change:transform,opacity,filter;
+    font-weight:400;letter-spacing:-.022em;line-height:1.22;font-size:clamp(1.45rem,3.4vw,2.9rem);
+    color:rgba(242,240,234,.92);text-wrap:balance}
+  .beat.quiet{color:var(--muted);font-weight:300}
+  .beat.setup{max-width:44ch;font-size:clamp(1.05rem,2.1vw,1.55rem);font-weight:300;
+    color:var(--muted);letter-spacing:-.008em;line-height:1.55}
+  .beat.setup em{font-style:normal;color:var(--ink);font-weight:400}
+  .beat .bsub{display:block;margin:1.4rem auto 0;max-width:48ch;text-wrap:balance;
+    font-size:clamp(.84rem,1.15vw,1rem);font-weight:300;letter-spacing:0;line-height:1.75;
+    color:var(--muted)}
+  .beat.punch .bsub{opacity:0;transform:translateY(10px);
+    transition:opacity 1.1s ease .35s,transform 1.1s ease .35s;margin-top:2.2rem}
+  .beat.punch.done .bsub{opacity:1;transform:none}
+  .beat.punch{max-width:none;opacity:1}
+  .beat .whisper{display:block;margin-top:1.4rem;font-size:.62rem;letter-spacing:.4em;
+    text-transform:uppercase;color:var(--dim);font-weight:400}
+
+  /* ═══════ DUST LINES ═══════ */
+  .dl{position:relative;display:inline-block;white-space:nowrap;
+    opacity:0;filter:blur(14px);transform:translateY(4px);
+    transition:opacity .85s ease,filter 1s ease,transform 1s ease}
+  .dl.lit{opacity:1;filter:blur(0);transform:none}
+
+  /* ═══════ HERO ═══════ */
+  #hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;text-align:center;padding:0 var(--gutter)}
+  .over{font-size:.64rem;letter-spacing:.5em;text-transform:uppercase;color:var(--bone);margin-bottom:3rem}
+  #hero h1{font-weight:500;letter-spacing:-.05em;line-height:1.02;font-size:clamp(2.9rem,9.2vw,8.8rem)}
+  .hero-sub{margin-top:2.2rem;font-family:var(--serif);font-style:italic;font-weight:300;
+    font-size:clamp(1rem,1.9vw,1.45rem);color:var(--muted);letter-spacing:0}
+  .cue{position:absolute;bottom:4vh;left:50%;transform:translateX(-50%);display:flex;
+    flex-direction:column;align-items:center;gap:.9rem}
+  .cue span{font-size:.58rem;letter-spacing:.42em;text-transform:uppercase;color:var(--dim)}
+  .cue i{display:block;width:1px;height:56px;background:linear-gradient(180deg,var(--bone),transparent);
+    animation:cuep 2.4s ease-in-out infinite}
+  @keyframes cuep{0%,100%{opacity:.2}50%{opacity:.85}}
+
+  /* ═══════ CODA ═══════ */
+  #coda .final{margin-top:clamp(5rem,14vh,9rem);text-align:center}
+  #coda .final .pre{font-size:.68rem;letter-spacing:.34em;text-transform:uppercase;color:var(--dim);margin-bottom:2rem}
+  #coda .lead-in{font-family:var(--serif);font-style:italic;font-weight:300;color:var(--muted);
+    font-size:clamp(1.02rem,1.9vw,1.5rem);line-height:1.65;max-width:46ch;margin:0 auto 3rem;text-wrap:balance}
+  .ends{margin-top:4rem;display:flex;gap:2.6rem;justify-content:center;flex-wrap:wrap}
+  .ends a{font-size:.84rem;letter-spacing:.06em;color:var(--muted);padding-bottom:.35rem;
+    border-bottom:1px solid var(--line);transition:color .35s,border-color .35s}
+  .ends a:hover{color:var(--ink);border-color:var(--bone)}
+  .sig{margin-top:5rem;text-align:center;font-size:.6rem;letter-spacing:.4em;text-transform:uppercase;color:var(--dim)}
+
+  /* ═══════ REVEALS ═══════ */
+  .rise{opacity:0;transform:translateY(26px);filter:blur(6px);
+    transition:opacity 1.15s cubic-bezier(.19,1,.22,1),transform 1.15s cubic-bezier(.19,1,.22,1),filter 1.15s ease}
+  .rise.on{opacity:1;transform:none;filter:blur(0)}
+  .d1{transition-delay:.1s}.d2{transition-delay:.22s}.d3{transition-delay:.34s}
+  .split .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
+  .split .w i{display:inline-block;font-style:inherit;transform:translateY(112%);
+    transition:transform 1.05s cubic-bezier(.19,1,.22,1)}
+  .split.on .w i{transform:translateY(0)}
+
+  /* ═══════ REDUCED MOTION ═══════ */
+  @media (prefers-reduced-motion:reduce){
+    .rise,.split .w i{opacity:1;transform:none;filter:none;transition:none}
+    .dl{opacity:1;filter:none;transform:none;transition:none}
+    .cue i{animation:none}
+  }
+  html.rm .pin-wrap{height:auto!important}
+  html.rm .pin{position:static;height:auto;display:block;padding:20vh var(--gutter)}
+  html.rm .beat{opacity:1!important;filter:none!important;transform:none!important;
+    margin:2.6rem auto;max-width:26ch}
+  html.rm .dl{opacity:1;filter:none;transform:none}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="tintl on" id="tint-bone"></div>
+<div class="tintl" id="tint-ice"></div>
+<div class="tintl" id="tint-parch"></div>
+<div class="tintl" id="tint-ember"></div>
+<canvas id="dustc"></canvas>
+<div id="vig"></div>
+<div id="grain"></div>
+<div id="progress"></div>
+
+<header class="hdr">
+  <div class="hdr-in">
+    <a class="wordmark" href="../index.html#/home">tiago</a>
+    <nav>
+      <a href="../index.html#/work">Work</a>
+      <a href="../index.html#/playground">Playground</a>
+      <a href="../index.html#/about">About</a>
+    </nav>
+  </div>
+</header>
+<a class="back" id="back" href="../index.html#/home">← Back</a>
+
+<div id="rail" aria-hidden="true"></div>
+
+<main>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section id="hero" data-ch data-tint="bone" data-rail="Open">
+  <div class="over rise">Tiago · a working philosophy</div>
+  <h1><span class="dl" data-dust data-d="0">How I work,</span><br><span class="dl srf" data-dust data-d=".35">told as a story.</span></h1>
+  <p class="hero-sub rise d2">six principles, four stories, and the Delivery Hero years as the example</p>
+  <div class="cue"><span>Scroll</span><i></i></div>
+</section>
+
+<!-- ═══════════ CH 01 · LISTEN ═══════════ -->
+<section data-ch data-tint="bone" data-rail="Listen" id="ch1">
+  <div class="pin-wrap" data-beats>
+    <div class="pin">
+      <div class="beat quiet"><p>Day one. A new org. Seven hundred new faces.<span class="bsub">New market, new politics, new problems. Zero context.</span></p></div>
+      <div class="beat"><p>Every instinct says: arrive with answers.<span class="bsub">Prove yourself. Ship something. Make a mark, fast.</span></p></div>
+      <div class="beat punch"><h2 class="disp g"><span class="dl" data-dust data-d="0">First, I</span> <span class="dl srf" data-dust data-d=".3">listen.</span></h2></div>
+    </div>
+  </div>
+  <div class="flow">
+    <div class="grid">
+      <div class="mark c-full"><span class="ch">Ch. 01 · Listen</span><span class="pr">Principle 01 · First principles</span></div>
+      <h3 class="fh split c-head">Absorb everything. Conclude nothing.</h3>
+      <div class="c-sub">
+        <p class="sub rise">Weeks of 1:1s, design reviews, steercos and C-level rooms, mostly spent observing. Then the problem statements start writing themselves. I prioritise with my own view, pressure-test it against my manager's, and out fall <strong>the first three wins.</strong></p>
+        <p class="rooms rise d1">1:1s <b>·</b> design reviews <b>·</b> steercos <b>·</b> c-level rooms <b>·</b> support tickets <b>·</b> dashboards</p>
+      </div>
+    </div>
+  </div>
+  <div class="flow">
+    <div class="grid flip">
+      <h3 class="fh split c-head">Broad on purpose. Deep by choice.</h3>
+      <div class="c-sub">
+        <p class="sub rise">The T-shape rule. Wide enough to understand every problem space that matters. Then <strong>ruthless about what drops</strong>, so the select few get everything I have. Focus is a subtraction exercise.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CH 02 · THE PLAN ═══════════ -->
+<section data-ch data-tint="ice" data-rail="The plan" id="ch2">
+  <div class="pin-wrap" data-beats>
+    <div class="pin">
+      <div class="beat setup"><p>When we rebuilt our ways of working, I didn't open with process. <em>I opened with a story.</em></p></div>
+      <div class="beat quiet"><p>December 1911. Two teams race for the South Pole.<span class="bsub">Amundsen's Norwegians against Scott's British expedition. Same continent, same goal, opposite philosophies.</span></p></div>
+      <div class="beat"><p>Scott pushes hard on clear days, shelters on bad ones.<span class="bsub">Huge miles when the weather allows, nothing when it doesn't. Progress hostage to conditions and mood.</span></p></div>
+      <div class="beat"><p>Amundsen walks the same distance every day, blizzard or blue sky.<span class="bsub">Never too little on hard days, never too much on easy ones. Discipline as strategy.</span></p></div>
+      <div class="beat punch"><h2 class="disp g"><span class="dl" data-dust data-d="0">The team with the</span> <span class="dl srf" data-dust data-d=".28">plan</span> <span class="dl" data-dust data-d=".42">comes home.</span></h2><span class="bsub">Amundsen reached the pole first and brought every single man back. Scott's party never made it home.</span></div>
+    </div>
+  </div>
+  <div class="flow">
+    <div class="grid">
+      <div class="mark c-full"><span class="ch">Ch. 02 · The plan</span><span class="pr">Principle 02 · Dive deep</span></div>
+      <h3 class="fh split c-head">A plan, a cadence, and the discipline to see it through.</h3>
+      <div class="c-sub">
+        <p class="sub rise">Amundsen gave our new chapter its spine. Culture, processes, quality bar, and workflows people follow because they believe the plan takes them somewhere better, <strong>not because they have to.</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CH 03 · THE STORIES ═══════════ -->
+<section data-ch data-tint="parch" data-rail="The stories" id="ch3">
+  <div class="pin-wrap" data-beats>
+    <div class="pin">
+      <div class="beat setup"><p>When Pandora's 2024 vision needed a centre, I didn't go looking for slides. <em>I went looking for voices.</em></p></div>
+      <div class="beat quiet"><p>Support calls. Research sessions. My own conversations with customers.<span class="bsub">The places where the product succeeds or fails in someone's actual day. Not metrics, moments.</span></p></div>
+      <div class="beat"><p>A customer whose dinner never came.<span class="bsub">Her evening, and her trust, gone in a single push notification.</span></p></div>
+      <div class="beat"><p>A vendor whose tablet froze in the lunch rush.<span class="bsub">Twenty orders on hold and a kitchen at full boil.</span></p></div>
+      <div class="beat"><p>A rider counting orders in the rain.<span class="bsub">Every delivery a small decision about time, safety and pay.</span></p></div>
+      <div class="beat punch"><h2 class="disp g"><span class="dl srf" data-dust data-d="0">Who are we building this for?</span></h2><span class="bsub">Their words, verbatim, went in front of the whole org.</span></div>
+    </div>
+  </div>
+  <div class="flow">
+    <div class="grid">
+      <div class="mark c-full"><span class="ch">Ch. 03 · The stories</span><span class="pr">Principle 03 · Storytelling</span></div>
+      <h3 class="fh split c-head">Their words did what no deck could.</h3>
+      <div class="c-sub">
+        <p class="sub rise">Not personas. Not decks. Real stories, pulled from support tickets, UX research and my own customer conversations, then told back to the org until everyone remembered exactly who we build for and why it matters. <strong>Words matter, so use them.</strong></p>
+        <div class="figure rise d1"><span class="num" data-count="700" data-suffix="+">0+</span><span class="cap">people across product and tech, rallied around one question</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CH 04 · AGAINST AVERAGE ═══════════ -->
+<section data-ch data-tint="bone" data-rail="Against average" id="ch4">
+  <div class="pin-wrap" data-beats>
+    <div class="pin">
+      <div class="beat setup"><p>When I needed the team to stop playing it safe, I didn't quote a framework. <em>I showed them an experiment.</em></p></div>
+      <div class="beat quiet"><p>1994. Komar and Melamid survey the world on its most wanted painting.<span class="bsub">Thousands of people across a dozen countries, asked exactly what they'd love to see on a canvas.</span></p></div>
+      <div class="beat"><p>The answers, everywhere: blue, a landscape, water, wildlife, a famous figure.<span class="bsub">So the artists painted each country's wish, faithfully, one by one.</span></p></div>
+      <div class="beat"><p>Country after country, the same painting.<span class="bsub">Alex Murrell would later name the era it predicted: the age of average.</span></p></div>
+      <div class="beat punch"><h2 class="disp g"><span class="dl" data-dust data-d="0">Please everyone, and</span> <span class="dl" data-dust data-d=".22">everything turns</span> <span class="dl srf" data-dust data-d=".4">average.</span></h2></div>
+    </div>
+  </div>
+  <div class="flow">
+    <div class="grid">
+      <div class="mark c-full"><span class="ch">Ch. 04 · Against average</span><span class="pr">Principle 06 · Empower future thinking</span></div>
+      <h3 class="fh split c-head">Average is a choice. We declined.</h3>
+      <div class="c-sub">
+        <p class="sub rise">Proof in hand, I pulled the team out of the OKR grind with one question:</p>
+      </div>
+      <h3 class="disp c-head" style="margin-top:clamp(3rem,9vh,6rem)"><span class="dl" data-dust data-d="0">What if</span> <span class="dl srf" data-dust data-d=".25">Disney</span> <span class="dl" data-dust data-d=".4">designed a food delivery app?</span></h3>
+      <div class="c-sub">
+        <p class="sub rise">No tickets, no roadmap. Creativity, wonder and magic, pointed at our own product with a novel set of eyes.</p>
+        <div class="figure rise d1"><span class="num" data-count="30" data-suffix="+">0+</span><span class="cap">user-validated concepts, still being built and borrowed from three years on</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CH 05 · THE FLOOR ═══════════ -->
+<section data-ch data-tint="bone" data-rail="The floor" id="ch5">
+  <div class="flow">
+    <div class="grid">
+      <div class="mark c-full"><span class="ch">Ch. 05 · The floor</span><span class="pr">Principle 05 · Craft with impact</span></div>
+      <h3 class="fh split c-head">That was the ceiling. Then we raised the floor.</h3>
+      <div class="c-sub">
+        <p class="sub rise">New pace, new ways of working, and UX debt quietly compounding underneath. So quality became <strong>a program, not a complaint.</strong> UX Quality, in three moves:</p>
+      </div>
+      <div class="c-full rows rise d1">
+        <div class="row"><span class="no">01</span><h4>Audit the debt</h4><p>Every issue to date documented in one tracker, owned and paid down by its product team.</p></div>
+        <div class="row"><span class="no">02</span><h4>Fix the foundations</h4><p>Bento, our design system, adopted by every team as the springboard for quality. Target 100%. Achieved 100%.</p></div>
+        <div class="row"><span class="no">03</span><h4>Stop the inflow</h4><p>Design QA revamped, UX bug SLAs in place, and AI putting designers' quick fixes straight into production.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CH 06 · BEFORE THE ASK ═══════════ -->
+<section data-ch data-tint="bone" data-rail="Before the ask" id="ch6">
+  <div class="flow">
+    <div class="grid flip">
+      <div class="mark c-full"><span class="ch">Ch. 06 · Before the ask</span><span class="pr">The pattern beneath all six</span></div>
+      <h3 class="fh split c-head">Ready before it's a priority.</h3>
+      <div class="c-sub">
+        <p class="sub rise">Design owned the discovery track, chartering problems and solutions ahead of the ask. When leadership finally said now, <strong>the work was already waiting.</strong></p>
+        <div class="figure rise d1"><span class="num" data-count="70" data-suffix="%">0%</span><span class="cap">of the 2024 roadmap grew out of design-led discovery</span></div>
+      </div>
+      <div class="c-full rows rise d2">
+        <a class="row" href="../index.html#/project/price-clarity" target="_blank" rel="noopener"><span class="no">↳</span><h4>Price communication system <span class="arw">↗</span></h4><p>Clarity on every fee, before regulators or leadership asked for it.</p></a>
+        <a class="row" href="../index.html#/project/subscription-revamp" target="_blank" rel="noopener"><span class="no">↳</span><h4>Pandora PRO <span class="arw">↗</span></h4><p>The subscription rethink, concepted and validated ahead of its moment.</p></a>
+        <a class="row" href="../index.html#/project/order-tracking" target="_blank" rel="noopener"><span class="no">↳</span><h4>Order tracking page revamp <span class="arw">↗</span></h4><p>The most viewed screen in the product, reimagined before it was on any roadmap.</p></a>
+      </div>
+      <div class="rows-note c-full rise d3">Each opens its case study in a new tab, this story keeps playing</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CH 07 · THE MACHINE ═══════════ -->
+<section data-ch data-tint="ember" data-rail="The machine" id="ch7">
+  <div class="pin-wrap" data-beats>
+    <div class="pin">
+      <div class="beat setup"><p>When AI became the conversation, and the anxiety, I didn't bring the team a policy. <em>I brought them a lap record.</em></p></div>
+      <div class="beat quiet"><p>Monaco, 1988. Qualifying.<span class="bsub">The tightest circuit in Formula 1, where the walls punish every mistake.</span></p></div>
+      <div class="beat"><p>Two world champions. The same car.<span class="bsub">Ayrton Senna and Alain Prost, teammates in identical McLarens.</span></p></div>
+      <div class="beat"><p>Senna goes 1.4 seconds faster.<span class="bsub">In a sport measured in thousandths, on equal machinery, that gap shouldn't exist.</span></p></div>
+      <div class="beat punch"><h2 class="disp g"><span class="dl" data-dust data-d="0">The car had limits.</span><br><span class="dl" data-dust data-d=".22">His</span> <span class="dl srf" data-dust data-d=".34">judgment</span> <span class="dl" data-dust data-d=".48">didn't.</span></h2></div>
+    </div>
+  </div>
+  <div class="flow">
+    <div class="grid">
+      <div class="mark c-full"><span class="ch">Ch. 07 · The machine</span><span class="pr">Principle 04 · Responsible AI</span></div>
+      <h3 class="fh split c-head">AI is our era's machine.</h3>
+      <div class="c-sub">
+        <p class="sub rise">I push the team to upskill, tinker, and put it to work where it compounds, while protecting what Senna proved: <strong>the edge lives in human judgment.</strong> We wrote our own manifesto rather than wait for one.</p>
+      </div>
+      <div class="c-full rows rise d1">
+        <a class="row" href="../index.html#/project/ai-manifesto" target="_blank" rel="noopener"><span class="no">↳</span><h4>AI manifesto and roadmap <span class="arw">↗</span></h4><p>The team's own AI direction, shaped before one was handed down.</p></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CH 08 · SPARK ═══════════ -->
+<section data-ch data-tint="ember" data-rail="Spark" id="ch8">
+  <div class="flow">
+    <div class="grid">
+      <div class="mark c-full"><span class="ch">Ch. 08 · Spark</span><span class="pr">Principles 05 + 06, compounding</span></div>
+      <h3 class="fh split c-head">Foundations first. Then flight.</h3>
+      <div class="c-sub">
+        <p class="sub rise">Spark started itself. Self-initiated, self-funded, a team <strong>inspired into making time</strong> rather than mandated to. The step after quality is uplift, and it's still unfolding.</p>
+      </div>
+      <div class="c-full rows rise d1">
+        <a class="row" href="../index.html#/project/spark" target="_blank" rel="noopener"><span class="no">↳</span><h4>Spark <span class="arw">↗</span></h4><p>The look, feel and experience of the product, taken to its next level.</p></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CODA ═══════════ -->
+<section data-ch data-tint="bone" data-rail="Coda" id="coda">
+  <div class="flow">
+    <div class="grid">
+      <div class="mark c-full"><span class="ch">Coda</span><span class="pr">Six principles, proven</span></div>
+      <h3 class="fh split c-head">You just watched all six at work.</h3>
+      <div class="c-full rows rise">
+        <div class="row"><span class="no">01</span><h4>First principles</h4><p>The map before the moves. Get the problem right, then craft the solution.</p></div>
+        <div class="row"><span class="no">02</span><h4>Dive deep</h4><p>Same miles every day. Hands-on wherever the moment asks.</p></div>
+        <div class="row"><span class="no">03</span><h4>Storytelling</h4><p>Words that made seven hundred people care. Words matter, so use them.</p></div>
+        <div class="row"><span class="no">04</span><h4>Responsible AI</h4><p>The machine, driven. Fluency everywhere, judgment surrendered nowhere.</p></div>
+        <div class="row"><span class="no">05</span><h4>Craft with impact</h4><p>The floor raised to one hundred percent, and pointed at real outcomes.</p></div>
+        <div class="row"><span class="no">06</span><h4>Empower future thinking</h4><p>Disney, deer, and thirty concepts the roadmap still mines today.</p></div>
+      </div>
+    </div>
+    <div class="final">
+      <p class="lead-in rise">Exceptional products are built by people who are inspired by where they're going, push each other to be better, and never lose sight of what great looks like.</p>
+      <h2 class="disp g"><span class="dl" data-dust data-d="0">My role is to create that</span> <span class="dl srf" data-dust data-d=".32">environment.</span></h2>
+      <div class="ends rise d2">
+        <a href="../index.html#/work">← All work</a>
+        <a href="../index.html#/about">More about me →</a>
+      </div>
+      <div class="sig rise d3">tiago · delivery hero · 2023 — present</div>
+    </div>
+  </div>
+</section>
+
+</main>
+<script>
+(function(){
+'use strict';
+/* ═══════ helpers ═══════ */
+function clamp(v,a,b){ return v<a?a:(v>b?b:v); }
+function c01(v){ return clamp(v,0,1); }
+function lerp(a,b,t){ return a+(b-a)*t; }
+function eoc(t){ return 1-Math.pow(1-t,3); }
+function eic(t){ return t*t*t; }
+function sstep(a,b,t){ var x=c01((t-a)/(b-a)); return x*x*(3-2*x); }
+
+var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var isMobile = window.matchMedia('(max-width: 820px)').matches;
+if(reduced) document.documentElement.classList.add('rm');
+var vh = window.innerHeight, vw = window.innerWidth;
+
+/* ═══════ split-word reveal ═══════ */
+function splitWords(el){
+  function walk(node){
+    var kids = Array.prototype.slice.call(node.childNodes);
+    kids.forEach(function(n){
+      if(n.nodeType === 3){
+        var frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(function(tok){
+          if(!tok) return;
+          if(/^\s+$/.test(tok)){ frag.appendChild(document.createTextNode(tok)); return; }
+          var w = document.createElement('span'); w.className = 'w';
+          var i = document.createElement('i'); i.textContent = tok;
+          w.appendChild(i); frag.appendChild(w);
+        });
+        node.replaceChild(frag, n);
+      } else if(n.nodeType === 1 && !n.classList.contains('w')) walk(n);
+    });
+  }
+  walk(el);
+  Array.prototype.forEach.call(el.querySelectorAll('.w i'), function(i, idx){
+    i.style.transitionDelay = (idx * 0.045) + 's';
+  });
+}
+document.querySelectorAll('.split').forEach(splitWords);
+
+var io = new IntersectionObserver(function(es){
+  es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); } });
+},{threshold:0.12, rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.rise,.split').forEach(function(el){ io.observe(el); });
+
+/* ═══════ counters ═══════ */
+var cio = new IntersectionObserver(function(es){
+  es.forEach(function(e){
+    if(!e.isIntersecting) return; cio.unobserve(e.target);
+    var el = e.target, target = parseFloat(el.dataset.count), suf = el.dataset.suffix || '';
+    if(reduced){ el.textContent = target + suf; return; }
+    var t0 = performance.now();
+    (function tick(now){
+      var p = Math.min(1, (now - t0) / 1600);
+      el.textContent = Math.round(target * eoc(p)) + suf;
+      if(p < 1) requestAnimationFrame(tick);
+    })(t0);
+  });
+},{threshold:0.5});
+document.querySelectorAll('[data-count]').forEach(function(el){ cio.observe(el); });
+
+/* ═══════ chapters, rail, tints ═══════ */
+var chapters = Array.prototype.slice.call(document.querySelectorAll('[data-ch]'));
+var rail = document.getElementById('rail');
+var railItems = [];
+chapters.forEach(function(s, i){
+  var li = document.createElement('div'); li.className = 'rl';
+  li.innerHTML = '<span class="nm">' + s.dataset.rail + '</span><span class="ln"></span>';
+  li.addEventListener('click', function(){ s.scrollIntoView({behavior: reduced ? 'auto' : 'smooth'}); });
+  rail.appendChild(li); railItems.push(li);
+});
+var TINT_GL = { bone:[0.022,0.019,0.013], ice:[0.007,0.022,0.052], parch:[0.032,0.023,0.009], ember:[0.050,0.022,0.006] };
+var tintEls = { bone:document.getElementById('tint-bone'), ice:document.getElementById('tint-ice'),
+                parch:document.getElementById('tint-parch'), ember:document.getElementById('tint-ember') };
+var activeCh = -1, glTintTarget = TINT_GL.bone.slice(), glTint = TINT_GL.bone.slice();
+function detectChapter(){
+  var mid = vh * 0.5, found = 0;
+  for(var i = 0; i < chapters.length; i++){
+    var r = chapters[i].getBoundingClientRect();
+    if(r.top <= mid) found = i; else break;
+  }
+  if(found !== activeCh){
+    activeCh = found;
+    railItems.forEach(function(li, i){ li.classList.toggle('on', i === found); });
+    var t = chapters[found].dataset.tint || 'bone';
+    for(var k in tintEls) tintEls[k].classList.toggle('on', k === t);
+    glTintTarget = TINT_GL[t] || TINT_GL.bone;
+  }
+}
+
+/* ═══════ progress ═══════ */
+var progEl = document.getElementById('progress');
+
+/* ═══════ WEBGL — slow smoke, wind, embers ═══════ */
+var glRender = null;
+(function(){
+  var canvas = document.getElementById('bg');
+  var gl = canvas.getContext('webgl', {antialias:false, alpha:false});
+  if(!gl){ canvas.style.background = 'radial-gradient(ellipse at 50% 35%, #14120F, #0D0C0B)'; return; }
+  var SCALE = isMobile ? 0.38 : 0.5;
+  function rs(){
+    canvas.width = Math.max(2, Math.floor(window.innerWidth * SCALE));
+    canvas.height = Math.max(2, Math.floor(window.innerHeight * SCALE));
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+  window.addEventListener('resize', rs, {passive:true}); rs();
+  var fs = [
+  'precision highp float;',
+  'uniform float u_time;uniform vec2 u_res;uniform float u_scroll;uniform vec2 u_mouse;uniform vec3 u_tint;',
+  'float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
+  'float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);',
+  ' float a=hash(i),b=hash(i+vec2(1,0)),c=hash(i+vec2(0,1)),d=hash(i+vec2(1,1));',
+  ' return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);}',
+  'float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.02+vec2(1.7,9.2);a*=.5;}return v;}',
+  'void main(){',
+  ' vec2 uv=gl_FragCoord.xy/u_res;',
+  ' float asp=u_res.x/u_res.y;',
+  ' vec2 p=uv*vec2(asp,1.)*1.35;',
+  ' float t=u_time*.032;',
+  ' p.y+=u_scroll*.16;p.x-=t*.42;',
+  ' vec2 md=(u_mouse-uv)*vec2(asp,1.);',
+  ' p+=md*.04/(length(md)+.7);',
+  ' vec2 q=vec2(fbm(p+vec2(0.,t)),fbm(p+vec2(5.2,1.3+t*.55)));',
+  ' vec2 r=vec2(fbm(p+2.0*q+vec2(1.7,9.2)+t*.3),fbm(p+2.4*q+vec2(8.3,2.8)));',
+  ' float f=fbm(p+2.2*r+vec2(-t*.9,0.));',
+  ' vec3 col=mix(vec3(.053,.048,.042),vec3(.108,.096,.078),f*f*1.6);',
+  ' col+=vec3(.115,.066,.024)*smoothstep(.52,.95,f)*.5;',
+  ' col+=vec3(.05,.062,.088)*smoothstep(.56,.9,q.y)*.28;',
+  ' col+=u_tint*(.45+.75*f);',
+  ' float vig=1.-smoothstep(.5,1.35,length(uv-vec2(.5,.42)));',
+  ' col*=.78+.22*vig;',
+  ' col+=(hash(uv*u_res+fract(u_time))-.5)*.010;',
+  ' gl_FragColor=vec4(col,1.);}'
+  ].join('\n');
+  function sh(src, type){ var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; }
+  var pr = gl.createProgram();
+  gl.attachShader(pr, sh('attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}', gl.VERTEX_SHADER));
+  gl.attachShader(pr, sh(fs, gl.FRAGMENT_SHADER));
+  gl.linkProgram(pr); gl.useProgram(pr);
+  var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+  var aL = gl.getAttribLocation(pr, 'a');
+  gl.enableVertexAttribArray(aL); gl.vertexAttribPointer(aL, 2, gl.FLOAT, false, 0, 0);
+  var uT = gl.getUniformLocation(pr,'u_time'), uR = gl.getUniformLocation(pr,'u_res'),
+      uS = gl.getUniformLocation(pr,'u_scroll'), uM = gl.getUniformLocation(pr,'u_mouse'),
+      uTi = gl.getUniformLocation(pr,'u_tint');
+  var mx = .5, my = .5;
+  if(!isMobile) document.addEventListener('mousemove', function(e){
+    mx = e.clientX / vw; my = 1 - e.clientY / vh;
+  }, {passive:true});
+  glRender = function(t){
+    glTint[0] = lerp(glTint[0], glTintTarget[0], .04);
+    glTint[1] = lerp(glTint[1], glTintTarget[1], .04);
+    glTint[2] = lerp(glTint[2], glTintTarget[2], .04);
+    gl.uniform1f(uT, t * 0.001);
+    gl.uniform2f(uR, canvas.width, canvas.height);
+    gl.uniform1f(uS, window.scrollY / vh);
+    gl.uniform2f(uM, mx, my);
+    gl.uniform3f(uTi, glTint[0], glTint[1], glTint[2]);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  };
+  if(reduced){ glRender(9000); glRender = null; }
+})();
+
+/* ═══════ GLOBAL DUST — one canvas, whole viewport, streams on wind ═══════ */
+var dust = null;
+if(!reduced && window.CanvasRenderingContext2D){
+  dust = (function(){
+    var cv = document.getElementById('dustc'), ctx = cv.getContext('2d');
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    function rs(){
+      vw = window.innerWidth; vh = window.innerHeight;
+      cv.width = Math.floor(vw * dpr); cv.height = Math.floor(vh * dpr);
+      cv.style.width = vw + 'px'; cv.style.height = vh + 'px';
+    }
+    window.addEventListener('resize', rs, {passive:true}); rs();
+
+    /* — ambient motes, always drifting — */
+    var AN = isMobile ? 60 : 170, amb = [];
+    for(var i = 0; i < AN; i++){
+      var z = 0.25 + Math.random() * 0.75;
+      amb.push({ x: Math.random() * vw, y: Math.random() * vh, z: z,
+        s: 0.4 + z * 1.1, a: 0.03 + z * 0.11, ph: Math.random() * 6.28, sp: 0.5 + Math.random() });
+    }
+
+    /* — text formation systems — */
+    var systems = [];
+    var CAP = isMobile ? 4200 : 12000;
+    function build(el){
+      var text = (el.textContent || '').trim();
+      if(!text || !el.offsetWidth) return;
+      var cs = getComputedStyle(el);
+      var fs = parseFloat(cs.fontSize);
+      var pad = Math.ceil(fs * 0.35);
+      var w = Math.ceil(el.offsetWidth) + pad * 2, h = Math.ceil(el.offsetHeight) + pad * 2;
+      var off = document.createElement('canvas'); off.width = w; off.height = h;
+      var oc = off.getContext('2d', {willReadFrequently:true});
+      oc.font = (cs.fontStyle !== 'normal' ? cs.fontStyle + ' ' : '') + cs.fontWeight + ' ' + fs + 'px ' + cs.fontFamily;
+      try{ if(cs.letterSpacing && cs.letterSpacing !== 'normal') oc.letterSpacing = cs.letterSpacing; }catch(_e){}
+      oc.textBaseline = 'alphabetic'; oc.fillStyle = '#fff';
+      var m = oc.measureText(text);
+      var asc = m.actualBoundingBoxAscent || fs * 0.78, desc = m.actualBoundingBoxDescent || fs * 0.22;
+      oc.fillText(text, pad, pad + (el.offsetHeight - (asc + desc)) / 2 + asc);
+      var textW = Math.max(1, m.width);
+      var gap = Math.max(2, Math.round(fs / 40)), pts = null;
+      for(var att = 0; att < 6; att++){
+        pts = [];
+        var data = oc.getImageData(0, 0, w, h).data;
+        for(var y = 0; y < h; y += gap){
+          for(var x = 0; x < w; x += gap){
+            if(data[(y * w + x) * 4 + 3] > 110){
+              var r0 = Math.random(), r1 = Math.random(), r2 = Math.random();
+              pts.push({
+                tx: x + (r0 - .5) * gap * .6, ty: y + (r1 - .5) * gap * .6,
+                d: 0.62 * c01((x - pad) / textW) + 0.38 * r2,
+                sz: 0.55 + Math.pow(r0, 1.4) * 1.25,
+                a0: 0.4 + 0.6 * r1,
+                ph: r2 * 6.28, tf: 0.7 + r0 * 0.7,
+                cv: (r1 - .5) * 90,
+                cls: r2 < 0.014 ? 2 : (r2 < 0.06 ? 1 : 0),
+                ox: 0, oy: 0
+              });
+            }
+          }
+        }
+        if(pts.length <= CAP) break;
+        gap++;
+      }
+      if(!pts.length) return;
+      /* per-system wind character */
+      var sr = Math.random();
+      var flip = sr < 0.3 ? -1 : 1;                    /* 30% stream in from the left */
+      var slope = (Math.random() - .5) * 0.55;
+      pts.forEach(function(p){
+        var dist = 170 + Math.pow(Math.random(), 1.7) * 860;
+        p.ox = flip * dist + (Math.random() - .5) * 90;
+        p.oy = slope * dist + (Math.random() - .5) * 170;
+      });
+      var sys = {
+        el: el, pts: pts, pad: pad, gap: gap,
+        beat: !!el.closest('.pin'),
+        dd: parseFloat(el.dataset.d || 0) * 0.5,
+        born: 0, ramp: 1150 + Math.random() * 550,
+        turb: 9 + Math.random() * 13,
+        extP: 0, extQ: 0, fade: 1, settle: 0, lit: false
+      };
+      el.__sys = sys;
+      systems.push(sys);
+    }
+
+    var INK = '#F2F0EA', WARM = '#D8CDB4', EMBER = '#D9A05B';
+    function drawSys(sys, now, dt){
+      var el = sys.el;
+      var r = el.getBoundingClientRect();
+      if(r.bottom < -260 || r.top > vh + 260){
+        if(sys.beat){ /* nothing */ } else if(r.top > vh + 260){
+          sys.born = 0;
+          if(sys.lit){ sys.lit = false; el.classList.remove('lit'); sys.fade = 1; }
+        }
+        return;
+      }
+      var P, Q;
+      if(sys.beat){
+        P = c01((sys.extP - sys.dd) / (1 - sys.dd));
+        Q = sys.extQ;
+      } else {
+        var p = c01((vh * 0.95 - r.top) / (vh * 0.32));
+        if(p > 0 && !sys.born) sys.born = now + parseFloat(sys.el.dataset.d || 0) * 460;
+        var ramp = sys.born ? c01((now - sys.born) / sys.ramp) : 0;
+        P = Math.min(p, eoc(ramp));
+        Q = c01((vh * 0.16 - r.bottom) / (vh * 0.2));
+      }
+      /* settled: hand off to crisp DOM text */
+      if(P >= 0.995 && Q <= 0){
+        sys.settle += dt;
+        if(sys.settle > 0.12 && !sys.lit){ sys.lit = true; el.classList.add('lit'); }
+      } else {
+        sys.settle = 0;
+        if(sys.lit && (Q > 0.01 || P < 0.97)){ sys.lit = false; el.classList.remove('lit'); }
+      }
+      if(sys.lit){ sys.fade = Math.max(0, sys.fade - dt * 2.4); }
+      else { sys.fade = Math.min(1, sys.fade + dt * 5); }
+      if(sys.fade <= 0.01) return;
+      if(P <= 0 && Q <= 0) return;
+
+      var bx = r.left - sys.pad, by = r.top - sys.pad;
+      var pts = sys.pts, turb = sys.turb, gfade = sys.fade;
+      for(var pass = 0; pass < 3; pass++){
+        ctx.fillStyle = pass === 0 ? INK : (pass === 1 ? WARM : EMBER);
+        for(var k = 0; k < pts.length; k++){
+          var b = pts[k];
+          if(b.cls !== pass) continue;
+          var dd = b.d * 0.6;
+          var e = eoc(c01((P - dd) / (1 - dd)));
+          var qe = Q > 0 ? eic(c01((Q - b.d * 0.25) / (1 - b.d * 0.25))) : 0;
+          var a = b.a0 * (e < 0.35 ? e / 0.35 : 1) * (1 - qe) * gfade;
+          if(a <= 0.015) continue;
+          var x = b.tx + b.ox * (1 - e) + Math.sin(e * 3.1416) * b.cv * 0.3;
+          var y = b.ty + b.oy * (1 - e);
+          var amp = turb * (1 - e) + 7 * qe;
+          x += Math.sin(now * 0.0011 * b.tf + b.ph) * (amp + 0.5);
+          y += Math.cos(now * 0.0009 * b.tf + b.ph * 1.6) * (amp * 0.75 + 0.4);
+          if(qe > 0){ x -= b.ox * 0.55 * qe * qe; y -= b.oy * 0.5 * qe * qe + 20 * qe; }
+          var s = b.sz * (0.75 + 0.45 * e) * (1 - qe * 0.5);
+          ctx.globalAlpha = a;
+          ctx.fillRect(bx + x - s / 2, by + y - s / 2, s, s);
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function frame(now, dt){
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, vw, vh);
+      /* ambient */
+      ctx.fillStyle = '#CFC9BB';
+      for(var i = 0; i < amb.length; i++){
+        var a = amb[i];
+        a.x -= (0.10 + a.z * 0.34) * dt * 60 * 0.55;
+        a.y += Math.sin(now * 0.0004 * a.sp + a.ph) * 0.14 + 0.035 * a.z;
+        if(a.x < -12){ a.x = vw + 10; a.y = Math.random() * vh; }
+        if(a.y > vh + 12) a.y = -10;
+        ctx.globalAlpha = a.a * (0.55 + 0.45 * Math.sin(now * 0.0009 * a.sp + a.ph));
+        ctx.fillRect(a.x, a.y, a.s, a.s);
+      }
+      ctx.globalAlpha = 1;
+      for(var j = 0; j < systems.length; j++) drawSys(systems[j], now, dt);
+    }
+
+    function initSystems(){
+      document.querySelectorAll('[data-dust]').forEach(build);
+    }
+    function rebuild(){
+      systems.length = 0;
+      document.querySelectorAll('[data-dust]').forEach(function(el){
+        if(el.__sys) el.__sys = null;
+        el.classList.remove('lit');
+      });
+      initSystems();
+    }
+    var rbT = null;
+    window.addEventListener('resize', function(){
+      clearTimeout(rbT); rbT = setTimeout(rebuild, 380);
+    }, {passive:true});
+
+    return { frame: frame, initSystems: initSystems };
+  })();
+}
+
+/* ═══════ PINNED BEAT SEQUENCES ═══════ */
+var pins = [];
+var seenPins = {};
+try{ seenPins = JSON.parse(sessionStorage.getItem('hiw-seen') || '{}'); }catch(_e){}
+if(!reduced){
+  document.querySelectorAll('[data-beats]').forEach(function(wrap, wi){
+    var beats = Array.prototype.slice.call(wrap.querySelectorAll('.beat'));
+    var weights = beats.map(function(b){ return b.classList.contains('punch') ? 1.55 : 1; });
+    var W = weights.reduce(function(a, b){ return a + b; }, 0);
+    wrap.style.height = (beats.length * (isMobile ? 72 : 80) + 46) + 'vh';
+    var starts = [], cum = 0;
+    weights.forEach(function(w){ starts.push(cum / W); cum += w; });
+    pins.push({ wrap: wrap, beats: beats, starts: starts, key: 'p' + wi,
+      done: !!seenPins['p' + wi], sprog: -1,
+      weights: weights.map(function(w){ return w / W; }) });
+  });
+}
+function updPins(dt){
+  for(var i = 0; i < pins.length; i++){
+    var P = pins[i];
+    var r = P.wrap.getBoundingClientRect();
+    if(r.bottom < -80 || r.top > vh + 80){ P.sprog = -1; continue; }
+    var total = r.height - vh;
+    var rawProg = total > 0 ? c01(-r.top / total) : 0;
+    /* velocity-smoothed progress: fast passes play as quick sweeps, never strobe */
+    var prog;
+    if(P.sprog < 0){ prog = P.sprog = rawProg; }
+    else {
+      var rate = (P.done ? 2.6 : 1.15) * dt;
+      P.sprog += clamp(rawProg - P.sprog, -rate, rate);
+      prog = P.sprog;
+    }
+    if(rawProg >= 0.985 && !P.done){
+      P.done = true; seenPins[P.key] = 1;
+      try{ sessionStorage.setItem('hiw-seen', JSON.stringify(seenPins)); }catch(_e){}
+    }
+    var rel = r.bottom < vh ? c01((vh - r.bottom) / (vh * 0.5)) : 0;
+    if(rel > 0 && P.sprog < rawProg) P.sprog = rawProg; /* released: snap, content is leaving anyway */
+    for(var j = 0; j < P.beats.length; j++){
+      var beat = P.beats[j];
+      var isLast = j === P.beats.length - 1;
+      var l = (prog - P.starts[j]) / (isLast ? (1 - P.starts[j]) : P.weights[j]);
+      if(beat.classList.contains('punch')){
+        var extP = c01(l / 0.55);
+        beat.classList.toggle('done', extP >= 0.97 && rel < 0.35);
+        beat.querySelectorAll('[data-dust]').forEach(function(el){
+          if(el.__sys){ el.__sys.extP = extP; el.__sys.extQ = rel; }
+        });
+        continue;
+      }
+      var oi = sstep(0.03, 0.3, l);
+      var oo = isLast ? (1 - rel) : (1 - sstep(0.72, 0.97, l));
+      var o = c01(oi * oo);
+      if(o <= 0.001){
+        if(beat.__v !== 0){ beat.__v = 0; beat.style.opacity = 0; beat.style.visibility = 'hidden'; }
+        continue;
+      }
+      beat.__v = o;
+      beat.style.visibility = 'visible';
+      beat.style.opacity = o;
+      var bl = (1 - oi) * 12 + (1 - oo) * 9;
+      beat.style.filter = bl > 0.3 ? 'blur(' + bl.toFixed(1) + 'px)' : 'none';
+      beat.style.transform = 'translateY(' + ((1 - oi) * 34 - (1 - oo) * 40).toFixed(1) + 'px)';
+    }
+  }
+}
+
+/* ═══════ FIRST-PASS SCROLL DAMPER ═══════
+   While a story sequence plays for the first time, wheel speed is capped to a
+   readable pace. Once its punchline has formed once (per session), damping is
+   gone for that sequence. Keyboard, scrollbar and touch are never intercepted. */
+if(!reduced && pins.length){
+  var MAXV = 1500;                 /* px per second while a fresh story is pinned */
+  var lastWheel = 0;
+  window.addEventListener('wheel', function(e){
+    if(e.ctrlKey) return;          /* pinch zoom */
+    var active = null;
+    for(var i = 0; i < pins.length; i++){
+      if(pins[i].done) continue;
+      var r = pins[i].wrap.getBoundingClientRect();
+      if(r.top < vh * 0.4 && r.bottom > vh * 1.1){ active = pins[i]; break; }
+    }
+    if(!active) return;
+    var dy = e.deltaY;
+    if(e.deltaMode === 1) dy *= 33; else if(e.deltaMode === 2) dy *= vh;
+    var now = performance.now();
+    var budget = clamp(MAXV * (now - lastWheel) / 1000, 34, 210);
+    lastWheel = now;
+    if(Math.abs(dy) <= budget) return;   /* gentle scrolls pass through natively */
+    e.preventDefault();
+    window.scrollBy({ top: (dy > 0 ? budget : -budget), left: 0, behavior: 'instant' });
+  }, {passive:false});
+}
+
+/* ═══════ MASTER LOOP ═══════ */
+var lastT = performance.now(), fc = 0;
+function loop(now){
+  var dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
+  var h = document.documentElement.scrollHeight - vh;
+  progEl.style.width = (h > 0 ? (window.scrollY / h * 100) : 0) + '%';
+  if(fc % 8 === 0) detectChapter();
+  fc++;
+  updPins(dt);
+  if(dust) dust.frame(now, dt);
+  if(glRender) glRender(now);
+  requestAnimationFrame(loop);
+}
+if(!reduced){
+  requestAnimationFrame(loop);
+} else {
+  detectChapter();
+  window.addEventListener('scroll', function(){
+    var h = document.documentElement.scrollHeight - vh;
+    progEl.style.width = (h > 0 ? (window.scrollY / h * 100) : 0) + '%';
+    detectChapter();
+  }, {passive:true});
+}
+
+/* ═══════ back button: return where you came from ═══════ */
+document.getElementById('back').addEventListener('click', function(e){
+  try{
+    if(document.referrer && history.length > 1){
+      var ref = new URL(document.referrer);
+      if(ref.origin === location.origin){ e.preventDefault(); history.back(); return; }
+    }
+  }catch(_e){}
+});
+
+/* ═══════ dust init after fonts ═══════ */
+if(dust){
+  var dInited = false;
+  function dInit(){ if(dInited) return; dInited = true; dust.initSystems(); }
+  if(document.fonts && document.fonts.ready){
+    Promise.all([
+      document.fonts.load('500 90px Geist'),
+      document.fonts.load('italic 300 90px Newsreader'),
+      document.fonts.ready
+    ]).then(dInit).catch(dInit);
+    setTimeout(dInit, 2600);
+  } else dInit();
+}
+})();
+</script>
+</body>
+</html>
