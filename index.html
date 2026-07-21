@@ -10,7 +10,7 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-SS4GG0DNJ7');
+  gtag('config', 'G-SS4GG0DNJ7', { send_page_view: false });
 </script>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20rx%3D%2224%22%20fill%3D%22%231B1B19%22%2F%3E%3Cpath%20d%3D%22M284%200Q204%200%20166.5%2036.5Q129%2073%20129%20153V435H45V534H129V659H257V534H398V435H257V165Q257%20127%20273.5%20113.0Q290%2099%20323%2099H398V0Z%22%20fill%3D%22%23F5F4F1%22%20transform%3D%22translate%2830.36%2083.00%29%20scale%280.09408%20-0.09408%29%22%2F%3E%3C%2Fsvg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1020,6 +1020,12 @@ const IMG_SUB_COVER = "assets/sub-cover.jpg";
     const activeNav = (route === 'project') ? 'work' : route;
     navLinks.forEach(a => { if(a.dataset.nav === activeNav) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
     try { history.replaceState(null, '', '#/' + route + (param ? '/' + param : '')); } catch(e){}
+    try {
+      const rt = { home:'Home', work:'Work', playground:'Playground', about:'About' };
+      const pt = (route === 'project' && bySlug[param]) ? bySlug[param].title : (rt[route] || 'Home');
+      document.title = pt + " — tiago's portfolio";
+      if(window.gtag) gtag('event','page_view',{ page_title: pt, page_location: location.href, page_path: '#/' + route + (param ? '/' + param : '') });
+    } catch(_e){}
     window.scrollTo({top:0,behavior:'auto'});
     if(mainEl) mainEl.focus({preventScroll:true});
   }
