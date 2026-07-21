@@ -1531,7 +1531,7 @@ const IMG_SUB_COVER = "assets/sub-cover.jpg";
     try {
       const rt = { home:'Home', work:'Work', playground:'Playground', about:'About' };
       const pt = (route === 'project' && bySlug[param]) ? bySlug[param].title : (rt[route] || 'Home');
-      document.title = pt + " — tiago's portfolio";
+      document.title = pt + " · tiago's portfolio";
       if(window.gtag) gtag('event','page_view',{ page_title: pt, page_location: location.href, page_path: '#/' + route + (param ? '/' + param : '') });
     } catch(_e){}
     window.scrollTo({top:0,behavior:'auto'});
