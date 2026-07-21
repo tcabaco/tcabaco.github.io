@@ -301,7 +301,8 @@
   .future-media.has-img img{width:100%;height:auto;object-fit:cover}
   .future-below{margin-top:2.4rem}
   .about-cta .future-inner{max-width:var(--wrap);margin-inline:auto;padding-inline:var(--gutter)}
-  .block.about-block{padding-block:clamp(1.5rem,3vw,2.4rem)}
+  .block.about-block{padding-block:0;margin-top:var(--section-y)}
+  section.block + section.block.about-block{padding-top:0}
   .about-photo img{width:100%;height:100%;object-fit:cover;display:block}
   .home-hero{display:grid;grid-template-columns:1fr auto;gap:clamp(1.5rem,5vw,4rem);align-items:center}
   .home-portrait{width:clamp(150px,19vw,220px);aspect-ratio:1;border-radius:16px;overflow:hidden;background:var(--raise);border:1px solid var(--line);flex:0 0 auto}
@@ -374,6 +375,34 @@
   html{overflow-x:clip}
   .embed-wrap{position:relative;width:100vw;margin-left:calc(50% - 50vw);margin-block:clamp(2rem,5vw,3.5rem);background:#0f0f2e}
   .uxai-host{display:block;width:100%}
+
+  /* ============ HOW I WORK — STORY ENTRY ============ */
+  .hiw-cta{position:relative;display:block;margin-top:2.4rem;border-radius:20px;overflow:hidden;
+    background:#12100E;padding:clamp(2rem,4vw,3rem) clamp(1.5rem,3.5vw,3rem);
+    transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .5s ease}
+  .hiw-cta::before{content:'';position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(ellipse 70% 100% at 12% 0%,rgba(200,144,85,.17),transparent 62%),
+               radial-gradient(ellipse 60% 90% at 88% 100%,rgba(122,158,205,.13),transparent 62%)}
+  .hiw-cta:hover{transform:translateY(-4px);box-shadow:0 28px 60px -28px rgba(27,27,25,.5)}
+  .hiw-cta canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .hiw-cta-in{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;
+    gap:1.6rem 2.5rem;flex-wrap:wrap}
+  .hiw-eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;
+    color:#B7B4AA;margin-bottom:.9rem}
+  .hiw-cta h3{font-family:var(--display);font-weight:600;letter-spacing:-.025em;color:#F5F4F1;
+    font-size:clamp(1.45rem,2.8vw,2.3rem);line-height:1.12}
+  .hiw-cta h3 em{font-family:var(--serif);font-style:italic;font-weight:400;color:#DDD3BC;letter-spacing:-.01em}
+  .hiw-sub{margin-top:.85rem;color:rgba(245,244,241,.55);font-size:.92rem;max-width:52ch;line-height:1.7}
+  .hiw-go{flex:0 0 auto;display:inline-flex;align-items:center;gap:.7rem;color:#F5F4F1;
+    font-family:var(--display);font-size:.9rem;border:1px solid rgba(245,244,241,.28);border-radius:100px;
+    padding:.95rem 1.7rem;background:rgba(245,244,241,.05);transition:all .35s ease;white-space:nowrap}
+  .hiw-go .arw{display:inline-block;transition:transform .35s ease}
+  .hiw-cta:hover .hiw-go{background:#F5F4F1;color:#1B1B19;border-color:#F5F4F1}
+  .hiw-cta:hover .hiw-go .arw{transform:translateX(5px)}
+  .hiw-cta.hiw-first{margin-top:.2rem;margin-bottom:clamp(2.4rem,4vw,3.2rem)}
+  .sec-head.no-rule{border-bottom:0;padding-bottom:0;margin-bottom:1.6rem}
+  @media(max-width:640px){.hiw-cta-in{flex-direction:column;align-items:flex-start}}
+  @media(prefers-reduced-motion:reduce){.hiw-cta,.hiw-go,.hiw-go .arw{transition:none}}
   .lb{position:fixed;inset:0;z-index:200;background:#141412;display:none;align-items:center;justify-content:center;overflow:hidden;touch-action:none}
   .lb.open{display:flex;animation:lbIn .22s ease both}
   @keyframes lbIn{from{opacity:0}to{opacity:1}}
@@ -447,7 +476,18 @@
 
     <section class="block">
       <div class="wrap">
-        <div class="sec-head"><h2 class="h-section">How I work</h2></div>
+        <div class="sec-head no-rule"><h2 class="h-section">How I work</h2></div>
+        <a class="hiw-cta hiw-first" href="assets/how-i-work.html" onclick="try{if(window.gtag)gtag('event','hiw_open')}catch(_e){}">
+          <canvas aria-hidden="true"></canvas>
+          <div class="hiw-cta-in">
+            <div>
+              <div class="hiw-eyebrow">Six principles, in action</div>
+              <h3>How I work, <em>told as a story.</em></h3>
+              <p class="hiw-sub">Reading about principles is one thing. Watching them play out is another: four stories, three years, one scrolling keynote.</p>
+            </div>
+            <span class="hiw-go">Watch it unfold <span class="arw">→</span></span>
+          </div>
+        </a>
         <div class="steps">
           <div class="step"><div class="num">01</div><h4>First principles</h4><p>Get the problem right before you craft the solution. Discovery is where design earns its leverage, and execution becomes table stakes once you're solving the thing that truly matters.</p></div>
           <div class="step"><div class="num">02</div><h4>Dive deep</h4><p>I'm a true believer in diving deep on the projects that need it most, whether that's being hands-on in the design, driving stakeholder influence, getting the work shipped, or whatever else the moment asks for.</p></div>
@@ -535,6 +575,17 @@
           <div class="step"><div class="num">05</div><h4>Craft with impact</h4><p>It's not just about me loving the craft, it's about reigniting in everyone the love that got them into this in the first place, all while keeping it pointed at real outcomes for the business.</p></div>
           <div class="step"><div class="num">06</div><h4>Empower future thinking</h4><p>OKRs and KPIs are what matter most, and teams have to deliver on them. But I make room for people to think beyond the roadmap, to chase the what-ifs and why-nots that take the work somewhere new.</p></div>
         </div>
+        <a class="hiw-cta" href="assets/how-i-work.html" onclick="try{if(window.gtag)gtag('event','hiw_open')}catch(_e){}">
+          <canvas aria-hidden="true"></canvas>
+          <div class="hiw-cta-in">
+            <div>
+              <div class="hiw-eyebrow">Six principles, in action</div>
+              <h3>How I work, <em>told as a story.</em></h3>
+              <p class="hiw-sub">Reading about principles is one thing. Watching them play out is another: four stories, three years, one scrolling keynote.</p>
+            </div>
+            <span class="hiw-go">Watch it unfold <span class="arw">→</span></span>
+          </div>
+        </a>
       </div>
     </section>
     <section class="block about-block">
@@ -1742,6 +1793,47 @@ const IMG_SUB_COVER = "assets/sub-cover.jpg";
     root.querySelectorAll('.moat-pill:not(.large)').forEach(function(pp){ pp.classList.remove('active'); });
     if(!isVisible){ expand.classList.add('visible'); pill.classList.add('active'); }
   }
+  /* ===== How-I-work entry: drifting dust on the dark panels ===== */
+  (function(){
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var cards = [].slice.call(document.querySelectorAll('.hiw-cta'));
+    if(!cards.length || !window.CanvasRenderingContext2D) return;
+    var sys = cards.map(function(card){
+      var cv = card.querySelector('canvas');
+      return { card: card, cv: cv, ctx: cv.getContext('2d'), pts: [], w: 0, h: 0, sp: 1 };
+    });
+    function seed(s){
+      s.pts = [];
+      var n = Math.max(40, Math.round(s.w / 13));
+      for(var i = 0; i < n; i++) s.pts.push({
+        x: Math.random() * s.w, y: Math.random() * s.h, z: .3 + Math.random() * .7,
+        ph: Math.random() * 6.28, e: Math.random() < .08
+      });
+    }
+    (function loop(t){
+      for(var i = 0; i < sys.length; i++){
+        var s = sys[i], cw = s.cv.offsetWidth, ch = s.cv.offsetHeight;
+        if(!cw || !ch) continue;
+        if(cw !== s.w || ch !== s.h){ s.w = s.cv.width = cw; s.h = s.cv.height = ch; seed(s); }
+        var hov = false; try{ hov = s.card.matches(':hover'); }catch(_e){}
+        s.sp += ((hov ? 2.8 : 1) - s.sp) * .05;
+        var ctx = s.ctx; ctx.clearRect(0, 0, s.w, s.h);
+        for(var j = 0; j < s.pts.length; j++){
+          var p = s.pts[j];
+          p.x -= (0.1 + p.z * 0.3) * s.sp;
+          p.y += Math.sin(t * 0.0005 + p.ph) * 0.12;
+          if(p.x < -4){ p.x = s.w + 4; p.y = Math.random() * s.h; }
+          if(p.y > s.h + 4) p.y = -3; else if(p.y < -4) p.y = s.h + 3;
+          ctx.globalAlpha = (0.09 + p.z * 0.2) * (0.6 + 0.4 * Math.sin(t * 0.001 + p.ph));
+          ctx.fillStyle = p.e ? '#D9A05B' : '#CFC9BB';
+          var sz = 0.8 + p.z * 1.4;
+          ctx.fillRect(p.x, p.y, sz, sz);
+        }
+        ctx.globalAlpha = 1;
+      }
+      requestAnimationFrame(loop);
+    })(0);
+  })();
   (function initRoute(){ const [n,p]=parseHash(); navigate(n,p); })();
   requestAnimationFrame(()=>{ const b=document.getElementById('boot'); if(b){ b.classList.add('done'); setTimeout(()=>b.remove(),550); } });
 </script>
